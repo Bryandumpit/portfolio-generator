@@ -1,5 +1,5 @@
 const inquirer = require('inquirer');
-const fs = require('fs');
+const{writeFile,copyFile} = rqeuire('./utils/generate-site.js');
 const generatePage = require('./src/page-template')
 
 // const pageHTML = generatePage(name,github);
@@ -126,11 +126,19 @@ const promptProject = portfolioData => {
 promptUser()
     .then(promptProject)
     .then(portfolioData => {
-        const pageHTML = generatePage(portfolioData);
-
-        fs.writeFile('./index.html', pageHTML, err => {
-           if (err) throw new Error(err);
-           console.log('Page created! Check out index.html in this directory to see it!')
-       });
-    });
+        return generatePage(portfolioData);
+    })
+    .then(pageHtml => {
+        return writeFile(pageHtml);
+    })
+    .then(writeFileResponse=>{
+        console.log(writeFileResponse);
+        return copyFile();
+    })
+    .then(copyFileResponse => {
+        console.log(copyFileResponse);
+    })
+    .catch(err=>{
+        console.log(err);
+    })
 
